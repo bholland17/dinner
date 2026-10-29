@@ -375,10 +375,10 @@ details.card[open] > summary{margin-bottom:14px}
   <!-- Identity -->
   <section class="card" id="pickCard" hidden>
     <div class="head">
-      <span class="eyebrow">Who's this?</span>
-      <h2>Open your personal link to vote</h2>
+      <span class="eyebrow">Before you come in</span>
+      <h2>Who's this?</h2>
     </div>
-    <p class="sub">Ben texted each of you your own link. Open it once on this phone and the page remembers you after that. You can see the votes without it, but you can't change them.</p>
+    <p class="sub">Tap your name. This phone remembers you after that.</p>
     <div class="pick" id="pick"></div>
   </section>
 
@@ -488,13 +488,6 @@ details.card[open] > summary{margin-bottom:14px}
 /* =========================================================
    Config
    ========================================================= */
-// Personal links: each person's link carries ?me=<key>. Only SHA-256 hashes of the keys live here.
-const KEY_HASHES = {
-  "ben": "b9d7e20ded0bfea534c0b09c6916de931610ef7b6ec86805596b8c19481b9237",
-  "ryan": "cccabb30af77e8084ccc0e8e0279930b9cafec5c6a5f925216ef67961229e50e",
-  "jared": "758b9f90551954898b782f9d8a190dfbe202025029a91a3107204bf2371ef914",
-  "parker": "484d7b63e3668b285003bfd7e41bbe37412cca1637433dcf3d952c83bcd21b5f"
-};
 const PEOPLE = [
   { id: "ben",    name: "Ben" },
   { id: "ryan",   name: "Ryan" },
@@ -766,29 +759,10 @@ const Store = {
 };
 
 let state = blank();
-let me = null;   // set only from a verified personal link
-const LS_KEY = "dinner-key";
-async function sha256(t) {
-  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(t));
-  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("");
-}
-async function whoIs(key) {
-  if (!key || !crypto.subtle) return null;
-  const h = await sha256(key.trim().toLowerCase());
-  return Object.keys(KEY_HASHES).find(id => KEY_HASHES[id] === h) || null;
-}
+let me = null;   // set when the person says who they are on the opening screen
 async function identify() {
-  const params = new URLSearchParams(location.search);
-  const fromLink = params.get("me");
-  if (fromLink) {
-    const id = await whoIs(fromLink);
-    params.delete("me");
-    const rest = params.toString();
-    history.replaceState(null, "", location.pathname + (rest ? "?" + rest : "") + location.hash);
-    if (id) { lsSet(LS_KEY, fromLink.trim().toLowerCase()); me = id; setTimeout(() => toast(`Hey ${nameOf(id)}. Tap your nights.`), 400); return; }
-    setTimeout(() => toast("That personal link didn't match. Ask Ben for yours."), 400);
-  }
-  me = await whoIs(lsGet(LS_KEY));
+  const v = lsGet(LS_ME);
+  me = PEOPLE.some(p => p.id === v) ? v : null;
 }
 let pendingSave = null, saving = false, dirty = false;
 
@@ -861,13 +835,13 @@ function setVote(date, v) {
 }
 const CYCLE = { undefined: "y", y: "m", m: "n", n: undefined };
 function tapDay(date) {
-  if (!me) { toast("Open your personal link to vote"); document.getElementById("pickCard").scrollIntoView({ behavior: "smooth" }); return; }
+  if (!me) { toast("Tap your name first"); document.getElementById("pickCard").scrollIntoView({ behavior: "smooth" }); return; }
   const cur = (state.votes[me] || {})[date];
   setVote(date, CYCLE[cur]);
   render(); queueSave();
 }
 function tapWeekday(dow) {
-  if (!me) { toast("Open your personal link to vote"); return; }
+  if (!me) { toast("Tap your name first"); return; }
   const dates = rangeDates(state).filter(d => parseISO(d).getDay() === dow);
   if (!dates.length) return;
   const next = CYCLE[(state.votes[me] || {})[dates[0]]];
@@ -972,21 +946,31 @@ function chyron() {
 
 function render() {
   const hasRoom = Store.mode === "link" || !!Store.room;
-  $("startCard").hidden = hasRoom;
-  const showApp = hasRoom;
+  const gated = !me;   // nobody gets in until they say who they are
+  $("pickCard").hidden = !gated;
+  $("startCard").hidden = hasRoom || gated;
+  const showApp = hasRoom && !gated;
   ["rollCard", "gridCard", "bestCard", "connect", "settings"].forEach(id => $(id).hidden = !showApp);
+  $("suggestCard").hidden = gated;
+  $("sync").hidden = gated;
 
   // Chyron
-  const [tag, line] = hasRoom ? chyron() : ["Coming up", "Four busy guys try to eat dinner. Again."];
+  const [tag, line] = gated ? ["Hold on", "Who's there? Say your name and come on in."]
+    : hasRoom ? chyron() : ["Coming up", "Four busy guys try to eat dinner. Again."];
   $("chyTag").textContent = tag; $("chyLine").textContent = line;
-  if (!hasRoom) { $("pickCard").hidden = true; $("ticket").hidden = true; $("whoStrip").hidden = true; return; }
+  $("pick").innerHTML = PEOPLE.map(p => `<button type="button" data-me="${p.id}">${p.name}</button>`).join("");
+  if (gated || !hasRoom) {
+    $("ticket").hidden = true;
+    $("whoStrip").hidden = !me;
+    if (me) $("whoStrip").innerHTML = `<span>You're <b style="color:var(--cream-text)">${escHTML(nameOf(me))}</b>.</span><button class="linkbtn" type="button" id="switchMe">Not you?</button>`;
+    return;
+  }
 
   // Identity
-  $("pickCard").hidden = !!me;
-  $("pick").innerHTML = "";
+  $("pick").innerHTML = PEOPLE.map(p => `<button type="button" data-me="${p.id}">${p.name}</button>`).join("");
   const ws = $("whoStrip");
   ws.hidden = !me;
-  if (me) ws.innerHTML = `<span>You're <b style="color:var(--cream-text)">${escHTML(nameOf(me))}</b>. Not you? Open your own personal link.</span>`;
+  if (me) ws.innerHTML = `<span>You're <b style="color:var(--cream-text)">${escHTML(nameOf(me))}</b>.</span><button class="linkbtn" type="button" id="switchMe">Not you?</button>`;
 
   // Roll call
   const voted = PEOPLE.filter(p => hasVoted(state, p.id));
@@ -1123,6 +1107,13 @@ document.addEventListener("click", e => {
   if (el.dataset.date) return tapDay(el.dataset.date);
   if (el.dataset.dow) return tapWeekday(+el.dataset.dow);
 
+  if (el.dataset.me) {
+    me = el.dataset.me; lsSet(LS_ME, me); render();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    toast(Store.room || Store.mode === "link" ? `Hey ${nameOf(me)}. Tap your nights.` : `Hey ${nameOf(me)}.`);
+    return;
+  }
+  if (el.id === "switchMe") { me = null; lsSet(LS_ME, ""); confirmDate = null; render(); window.scrollTo({ top: 0, behavior: "smooth" }); return; }
   if (el.dataset.nudge) return share(`${nameOf(el.dataset.nudge)}. Dinner. Pick your nights, it takes 30 seconds:`);
   if (el.dataset.lock) { confirmDate = el.dataset.lock; render(); return; }
   if (el.dataset.lockyes) { confirmDate = null; lockNight(el.dataset.lockyes); toast("Locked in. Add it to your calendar."); return; }
@@ -1139,7 +1130,7 @@ document.addEventListener("click", e => {
     return;
   }
   if (el.id === "allYes") {
-    if (!me) { toast("Open your personal link to vote"); return; }
+    if (!me) { toast("Tap your name first"); return; }
     rangeDates(state).forEach(d => { if (!(state.votes[me] || {})[d]) setVote(d, "y"); });
     render(); queueSave(); toast("Every open night set to yes. Now tap the ones you can't do.");
     return;
@@ -1167,7 +1158,7 @@ $("icsLabel").addEventListener("keydown", e => { if (e.key === "Enter" || e.key 
 $("icsFile").addEventListener("change", async e => {
   const f = e.target.files[0]; e.target.value = "";
   if (!f) return;
-  if (!me) { toast("Open your personal link to vote"); return; }
+  if (!me) { toast("Tap your name first"); return; }
   try {
     const text = await f.text();
     const busy = busyFromICS(text, rangeDates(state));
@@ -1257,7 +1248,7 @@ async function startDinner() {
     await writeHash();
   }
   render();
-  toast(me ? "Dinner started. Tap your nights, then share the link." : "Dinner started. Open your personal link to vote.");
+  toast("Dinner started. Tap your nights, then share the link.");
 }
 
 async function boot() {
