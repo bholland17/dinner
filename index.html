@@ -1,0 +1,1283 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dinner, Already</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Ben, Ryan, Jared and Parker pick one night for dinner.">
+<meta name="theme-color" content="#2b1d14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,400..900,0..100,0..1&family=Work+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one narrow column on wood paneling. A 70s TV set plays the meme, its lower-third chyron reports who is holding up dinner.
+   Below it, TV-Guide paper cards: roll call, the night grid, the best nights, and the locked-in ticket. */
+:root{
+  --walnut:#2b1d14;        /* paneling */
+  --walnut-2:#3a281b;
+  --cabinet:#6a4426;       /* TV cabinet */
+  --paper:#f1e1bb;         /* listing paper */
+  --paper-2:#e6d2a3;
+  --ink:#2a1c12;
+  --ink-soft:#6b5640;
+  --mustard:#d9a23a;       /* accent */
+  --bowtie:#93292c;        /* can't */
+  --avocado:#6c8530;       /* yes */
+  --maybe:#d9a23a;         /* if I must */
+  --cream-text:#f4e7c8;
+  --cream-dim:#c9b48f;
+  --font-display:"Fraunces", "Cooper Black", Georgia, serif;
+  --font-body:"Work Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono:"DM Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --r:14px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  font:400 16px/1.5 var(--font-body);
+  color:var(--cream-text);
+  background-color:var(--walnut);
+  background-image:
+    repeating-linear-gradient(90deg, rgba(0,0,0,.22) 0 2px, rgba(255,255,255,.025) 2px 3px, transparent 3px 58px),
+    linear-gradient(180deg, var(--walnut-2), var(--walnut) 60%);
+  background-attachment:fixed;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+  padding-block:calc(20px + env(safe-area-inset-top, 0px)) calc(48px + env(safe-area-inset-bottom, 0px));
+}
+[hidden]{display:none!important}
+.wrap{max-width:680px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--mustard);outline-offset:2px;border-radius:6px}
+a{color:inherit}
+
+/* ---------- TV ---------- */
+.tv{
+  background:
+    repeating-linear-gradient(97deg, rgba(0,0,0,.10) 0 3px, transparent 3px 11px),
+    linear-gradient(160deg, #7c5230, var(--cabinet) 45%, #4b2f19);
+  border-radius:30px;
+  padding:16px 16px 12px;
+  box-shadow:0 18px 40px rgba(0,0,0,.45), inset 0 2px 0 rgba(255,255,255,.12), inset 0 -3px 0 rgba(0,0,0,.25);
+}
+.screen{
+  position:relative;
+  border-radius:26px/32px;
+  overflow:hidden;
+  background:#111;
+  aspect-ratio:241/163;
+  max-width:100%;
+  box-shadow:0 0 0 6px #1c130c, 0 0 0 8px rgba(255,255,255,.08);
+}
+.screen video,.screen img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(1.1) contrast(1.05)}
+.screen::before{ /* scanlines */
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0 1px, transparent 1px 3px);
+}
+.screen::after{ /* glass */
+  content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:radial-gradient(120% 90% at 50% 45%, transparent 55%, rgba(0,0,0,.55) 100%),
+             linear-gradient(160deg, rgba(255,255,255,.10), transparent 35%);
+}
+.chyron{
+  position:absolute;left:0;right:0;bottom:0;z-index:3;
+  padding:10px 14px 12px;
+  background:linear-gradient(180deg, transparent, rgba(20,12,6,.78) 30%);
+  display:flex;flex-direction:column;gap:2px;
+}
+.chyron .tag{font:500 10px/1 var(--font-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mustard)}
+.chyron .line{font:600 clamp(15px,4.2vw,19px)/1.25 var(--font-body);color:#fff6df;text-shadow:0 1px 2px #000;text-wrap:balance}
+.tv-base{display:flex;align-items:center;gap:12px;padding:12px 6px 2px}
+.grille{flex:1;height:22px;border-radius:6px;background:repeating-linear-gradient(90deg,#2a1a0e 0 3px,#6a4426 3px 6px);opacity:.75}
+.knob{width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#e9d3a0,#9b7a45 55%,#4b3418);box-shadow:0 2px 3px rgba(0,0,0,.5);position:relative}
+.knob::after{content:"";position:absolute;left:50%;top:3px;width:2px;height:9px;background:#3a2612;transform:translateX(-50%)}
+.knob.k2::after{transform:translateX(-50%) rotate(60deg);transform-origin:50% 10px}
+.chan{font:500 11px/1 var(--font-mono);color:#f1e1bb;opacity:.8;letter-spacing:.1em}
+
+/* ---------- Masthead ---------- */
+.mast{display:flex;flex-direction:column;gap:6px;padding:0 4px}
+.mast h1{
+  margin:0;
+  font-family:var(--font-display);
+  font-weight:900;
+  font-variation-settings:"SOFT" 100, "WONK" 1, "opsz" 144;
+  font-size:clamp(2.7rem, 11vw, 4.6rem);
+  line-height:.92;
+  letter-spacing:-.02em;
+  color:var(--mustard);
+  text-shadow:3px 3px 0 var(--bowtie), 6px 6px 0 rgba(0,0,0,.35);
+  text-wrap:balance;
+}
+.mast p{margin:6px 0 0;color:var(--cream-dim);max-width:46ch}
+.mast .who-strip{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:8px;font-size:14px;color:var(--cream-dim)}
+.linkbtn{background:none;border:0;padding:0;color:var(--mustard);text-decoration:underline;text-underline-offset:3px;font-weight:600}
+
+/* ---------- Paper cards ---------- */
+.card{
+  background:
+    radial-gradient(140% 100% at 0% 0%, rgba(255,255,255,.35), transparent 50%),
+    var(--paper);
+  color:var(--ink);
+  border-radius:var(--r);
+  padding:18px 16px 18px;
+  box-shadow:0 10px 24px rgba(0,0,0,.35), 0 1px 0 rgba(255,255,255,.4) inset;
+  display:flex;flex-direction:column;gap:14px;
+}
+.card h2{
+  margin:0;font-family:var(--font-display);font-weight:800;
+  font-variation-settings:"SOFT" 100, "WONK" 0, "opsz" 48;
+  font-size:1.45rem;line-height:1.1;letter-spacing:-.01em;text-wrap:balance;
+}
+.eyebrow{font:500 11px/1 var(--font-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
+.head{display:flex;flex-direction:column;gap:6px}
+.sub{margin:0;color:var(--ink-soft);font-size:14.5px}
+
+/* ---------- Identity picker ---------- */
+.pick{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.pick button{
+  border:2px solid var(--ink);background:var(--paper-2);border-radius:12px;
+  padding:16px 10px;font:800 1.3rem/1 var(--font-display);font-variation-settings:"SOFT" 100,"WONK" 1;
+  box-shadow:3px 3px 0 var(--ink);
+  transition:transform .08s ease, box-shadow .08s ease, background .15s;
+}
+.pick button:hover{background:#f7ebcd}
+.pick button:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+
+/* ---------- Roll call ---------- */
+.roll{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.person{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  padding:10px 4px 10px;border-radius:12px;background:var(--paper-2);text-align:center;min-width:0;
+}
+.person.me{outline:2px solid var(--ink)}
+.avatar{
+  width:42px;height:42px;border-radius:50%;display:grid;place-items:center;
+  font:800 1.15rem/1 var(--font-display);font-variation-settings:"SOFT" 100;
+  background:var(--ink);color:var(--paper);
+}
+.person .nm{font-weight:700;font-size:14px;line-height:1.1}
+.person .st{font:500 10.5px/1.2 var(--font-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft)}
+.person.done .avatar{background:var(--avocado)}
+.person.done .st{color:var(--avocado)}
+.nudge{
+  border:0;border-radius:999px;padding:4px 10px;font:600 12px/1.2 var(--font-body);
+  background:var(--ink);color:var(--paper);
+}
+
+/* ---------- Legend + tools ---------- */
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--ink-soft);align-items:center}
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:5px}
+.sw.y{background:var(--avocado)} .sw.m{background:var(--maybe)} .sw.n{background:var(--bowtie)} .sw.e{border:1.5px solid var(--ink-soft)}
+.tools{display:flex;flex-wrap:wrap;gap:8px}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  border:2px solid var(--ink);border-radius:999px;background:transparent;
+  padding:9px 15px;font-weight:600;font-size:14.5px;line-height:1.1;text-decoration:none;color:var(--ink);
+  transition:background .15s, transform .08s;
+}
+.btn:hover{background:rgba(42,28,18,.07)}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:var(--ink);color:var(--paper)}
+.btn.primary:hover{background:#3d2a1c}
+.btn.hot{background:var(--bowtie);border-color:var(--bowtie);color:#fff4dc}
+.btn.hot:hover{background:#7d2124}
+.btn.small{padding:6px 12px;font-size:13px}
+.btn svg{width:16px;height:16px;flex:none}
+
+/* ---------- Grid ---------- */
+.gridwrap{display:flex;flex-direction:column;gap:6px}
+.dow,.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.dow button{
+  border:0;background:none;padding:4px 0;border-radius:6px;
+  font:500 11px/1 var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);
+}
+.dow button:hover{background:rgba(42,28,18,.08);color:var(--ink)}
+.month{font:800 1rem/1 var(--font-display);font-variation-settings:"SOFT" 100;margin:8px 2px 2px;color:var(--ink)}
+.day{
+  position:relative;
+  border:1.5px solid rgba(42,28,18,.35);border-radius:10px;background:rgba(255,255,255,.35);
+  aspect-ratio:1/1.08;padding:5px 4px 5px;min-width:0;
+  display:flex;flex-direction:column;justify-content:space-between;align-items:stretch;
+  transition:background .15s, transform .08s, border-color .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.day:active{transform:scale(.96)}
+.day .dn{font:600 15px/1 var(--font-body);text-align:left;font-variant-numeric:tabular-nums;color:var(--ink)}
+.day .dn small{display:block;font:500 9px/1 var(--font-mono);letter-spacing:.06em;text-transform:uppercase;margin-bottom:1px}
+.day .mine{position:absolute;top:5px;right:5px;font:700 10px/1 var(--font-mono);color:var(--ink)}
+.day.v-y{background:var(--avocado);border-color:var(--avocado)}
+.day.v-m{background:var(--maybe);border-color:var(--maybe)}
+.day.v-n{background:var(--bowtie);border-color:var(--bowtie)}
+.day.v-y .dn,.day.v-n .dn,.day.v-y .mine,.day.v-n .mine{color:#fff4dc}
+.day.off{opacity:.28;pointer-events:none;background:transparent;border-style:dashed}
+.day.top::after{
+  content:"";position:absolute;top:-5px;right:-5px;width:14px;height:14px;border-radius:50%;
+  background:var(--mustard);border:2px solid var(--ink);
+}
+.day.locked{box-shadow:0 0 0 3px var(--ink)}
+.slots{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px}
+.slots i{
+  display:block;height:7px;border-radius:2px;background:rgba(42,28,18,.14);
+}
+.slots i.y{background:#3f5418} .slots i.m{background:#b07a12} .slots i.n{background:#5e1517}
+.day.v-y .slots i:not(.y):not(.m):not(.n),.day.v-n .slots i:not(.y):not(.m):not(.n),.day.v-m .slots i:not(.y):not(.m):not(.n){background:rgba(255,255,255,.35)}
+.day.v-y .slots i.y{background:#e8f0c8} .day.v-n .slots i.n{background:#f6c9c4} .day.v-m .slots i.m{background:#fff0c8}
+.slotkey{display:grid;grid-template-columns:repeat(4,auto);justify-content:start;gap:4px 10px;font:500 11px/1 var(--font-mono);color:var(--ink-soft)}
+
+/* ---------- Best nights ---------- */
+.best{display:flex;flex-direction:column;gap:10px}
+.night{
+  display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;align-items:center;
+  padding:12px 12px;border-radius:12px;background:var(--paper-2);
+}
+.night .rank{
+  grid-row:span 2;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;
+  font:800 1.2rem/1 var(--font-display);background:var(--ink);color:var(--mustard);
+}
+.night.first .rank{background:var(--mustard);color:var(--ink);box-shadow:0 0 0 2px var(--ink)}
+.night .when{font:800 1.15rem/1.15 var(--font-display);font-variation-settings:"SOFT" 100;min-width:0}
+.chips{display:flex;flex-wrap:wrap;gap:5px;min-width:0}
+.chip{font:500 11.5px/1 var(--font-mono);padding:4px 7px;border-radius:999px;background:rgba(42,28,18,.1);white-space:nowrap}
+.chip.y{background:var(--avocado);color:#fff4dc}
+.chip.m{background:var(--maybe);color:var(--ink)}
+.chip.q{background:transparent;border:1px dashed var(--ink-soft);color:var(--ink-soft)}
+.night .act{grid-column:1 / -1;display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:6px}
+.night .confirm{font-size:14px;font-weight:600}
+.empty{padding:14px;border-radius:12px;border:1.5px dashed var(--ink-soft);color:var(--ink-soft);font-size:14.5px}
+
+/* ---------- Ticket ---------- */
+.ticket{
+  position:relative;
+  background:
+    radial-gradient(circle at 0 50%, var(--walnut) 0 12px, transparent 13px),
+    radial-gradient(circle at 100% 50%, var(--walnut) 0 12px, transparent 13px),
+    var(--mustard);
+  color:var(--ink);border-radius:var(--r);padding:20px 22px;
+  box-shadow:0 12px 28px rgba(0,0,0,.45);
+  display:flex;flex-direction:column;gap:14px;
+}
+.ticket .eyebrow{color:#5a3d12}
+.ticket .big{
+  font:900 clamp(1.9rem, 8vw, 2.8rem)/1 var(--font-display);
+  font-variation-settings:"SOFT" 100,"WONK" 1,"opsz" 144;letter-spacing:-.015em;text-wrap:balance;
+}
+.ticket .meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.field{display:flex;flex-direction:column;gap:4px;min-width:0}
+.field label{font:500 10.5px/1 var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft)}
+.ticket .field label{color:#5a3d12}
+.field input,.field select{
+  width:100%;min-width:0;border:2px solid var(--ink);border-radius:10px;background:rgba(255,255,255,.55);
+  padding:9px 10px;font-size:15px;color:var(--ink);
+}
+.ticket .tools .btn{border-color:var(--ink)}
+.cal3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.cal3 .btn{padding:10px 6px}
+.ticket hr{border:0;border-top:2px dashed rgba(42,28,18,.4);margin:2px 0;width:100%}
+
+/* ---------- Settings & connect ---------- */
+details.card{gap:0}
+details.card > summary{
+  list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:10px;
+  font:800 1.2rem/1.1 var(--font-display);font-variation-settings:"SOFT" 100;
+}
+details.card > summary::-webkit-details-marker{display:none}
+details.card > summary::after{content:"+";font:500 1.4rem/1 var(--font-mono)}
+details.card[open] > summary::after{content:"\2212"}
+details.card[open] > summary{margin-bottom:14px}
+.form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.form .full{grid-column:1 / -1}
+.apps{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;margin:0;padding:0;list-style:none}
+.apps li{display:grid;grid-template-columns:110px minmax(0,1fr);gap:10px;font-size:14.5px;padding:8px 0;border-top:1px solid rgba(42,28,18,.15)}
+.apps li:first-child{border-top:0}
+.apps b{font-weight:700}
+.apps span{color:var(--ink-soft)}
+.sync{display:flex;align-items:center;gap:8px;font:500 12px/1.3 var(--font-mono);color:var(--cream-dim);justify-content:center;text-align:center;flex-wrap:wrap}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--cream-dim);flex:none}
+.dot.ok{background:#9dbb4a} .dot.warn{background:var(--mustard)} .dot.bad{background:#d55}
+
+/* ---------- Suggestion box ---------- */
+.suggest{display:flex;gap:8px}
+.suggest input{
+  flex:1;min-width:0;border:2px solid var(--ink);border-radius:999px;background:rgba(255,255,255,.55);
+  padding:10px 16px;font-size:15.5px;color:var(--ink);
+}
+.suggest input::placeholder{color:var(--ink-soft);opacity:.75}
+.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.ideas{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.ideas li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding:9px 0;border-top:1px solid rgba(42,28,18,.15);font-size:14.5px}
+.ideas li:first-child{border-top:0}
+.ideas .txt{min-width:0;overflow-wrap:anywhere}
+.ideas .by{font:500 11px/1.6 var(--font-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);white-space:nowrap}
+
+/* ---------- Start screen ---------- */
+.start .btn.primary{align-self:flex-start;padding:12px 20px;font-size:16px}
+
+/* ---------- Toast ---------- */
+.toast{
+  position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom, 0px));transform:translateX(-50%) translateY(20px);
+  background:var(--ink);color:var(--paper);border:2px solid var(--mustard);
+  padding:10px 16px;border-radius:999px;font-weight:600;font-size:14px;opacity:0;pointer-events:none;
+  transition:opacity .2s, transform .2s;max-width:calc(100vw - 32px);text-align:center;z-index:20;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.foot{font-size:12.5px;color:var(--cream-dim);text-align:center;opacity:.8}
+
+@media (min-width:560px){
+  .card{padding:22px 22px}
+  .day .dn{font-size:16px}
+  .slots i{height:8px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <section class="tv" aria-label="Status">
+    <div class="screen">
+      <video id="meme" autoplay muted loop playsinline preload="auto" poster="poster.jpg" aria-hidden="true">
+        <source src="meme.mp4" type="video/mp4">
+      </video>
+      <div class="chyron" role="status" aria-live="polite">
+        <span class="tag" id="chyTag">Live</span>
+        <span class="line" id="chyLine">Loading the dinner…</span>
+      </div>
+    </div>
+    <div class="tv-base" aria-hidden="true">
+      <span class="chan">CH 4</span>
+      <div class="grille"></div>
+      <div class="knob"></div><div class="knob k2"></div>
+    </div>
+  </section>
+
+  <header class="mast">
+    <h1>Dinner, Already.</h1>
+    <p>Ben, Ryan, Jared and Parker. One dinner. Tap the nights you can do and this page finds the one that works for all four.</p>
+    <div class="who-strip" id="whoStrip" hidden></div>
+  </header>
+
+  <!-- Start: no room yet -->
+  <section class="card start" id="startCard" hidden>
+    <div class="head">
+      <span class="eyebrow">New dinner</span>
+      <h2>Start the dinner, then text the link to the group</h2>
+    </div>
+    <p class="sub">One person starts it. Everyone else opens the same link and taps their nights. Votes sync for all four.</p>
+    <button class="btn primary" id="startBtn" type="button">Start the dinner</button>
+  </section>
+
+  <!-- Identity -->
+  <section class="card" id="pickCard" hidden>
+    <div class="head">
+      <span class="eyebrow">First things first</span>
+      <h2>Who's this?</h2>
+    </div>
+    <div class="pick" id="pick"></div>
+  </section>
+
+  <!-- Locked ticket -->
+  <section class="ticket" id="ticket" hidden></section>
+
+  <!-- Roll call -->
+  <section class="card" id="rollCard">
+    <div class="head">
+      <span class="eyebrow" id="dueLine">Roll call</span>
+      <h2 id="rollTitle">Who's voted</h2>
+    </div>
+    <div class="roll" id="roll"></div>
+  </section>
+
+  <!-- Grid -->
+  <section class="card" id="gridCard">
+    <div class="head">
+      <span class="eyebrow">Your nights</span>
+      <h2>Tap a night: once for yes, twice for if I must, three times for can't</h2>
+    </div>
+    <div class="legend">
+      <span><i class="sw y"></i>Yes</span>
+      <span><i class="sw m"></i>If I must</span>
+      <span><i class="sw n"></i>Can't</span>
+      <span><i class="sw e"></i>No answer</span>
+    </div>
+    <div class="gridwrap" id="grid"></div>
+    <p class="sub">The four bars under each date are Ben, Ryan, Jared and Parker, left to right.</p>
+    <p class="sub">Tap a weekday letter to change every one of those nights at once. Fridays are always out? Tap F until they turn red.</p>
+    <div class="tools">
+      <label class="btn" for="icsFile" tabindex="0" id="icsLabel">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+        Import my calendar
+      </label>
+      <input type="file" id="icsFile" accept=".ics,text/calendar" hidden>
+      <button class="btn" type="button" id="allYes">I'm wide open</button>
+      <button class="btn" type="button" id="clearMine">Clear mine</button>
+    </div>
+    <p class="sub" id="clearConfirm" hidden>Clear all your votes? <button class="linkbtn" id="clearYes" type="button">Clear them</button> · <button class="linkbtn" id="clearNo" type="button">Keep them</button></p>
+  </section>
+
+  <!-- Best nights -->
+  <section class="card" id="bestCard">
+    <div class="head">
+      <span class="eyebrow">The math</span>
+      <h2>Best nights so far</h2>
+    </div>
+    <p class="sub">Any "can't" knocks a night out. Then yes beats if I must, and sooner beats later.</p>
+    <div class="best" id="best"></div>
+  </section>
+
+  <!-- Connect -->
+  <details class="card" id="connect">
+    <summary>Connect your apps</summary>
+    <ul class="apps">
+      <li><b>Your calendar</b><span>Import an .ics export and every evening you're booked (5 to 10 PM) gets marked can't. All-day events become if I must. Google Calendar: Settings, Import &amp; export, Export. Apple Calendar on a Mac: File, Export. Outlook: File, Save Calendar.</span></li>
+      <li><b>Group text</b><span>Share and Nudge open your phone's share sheet, so the link goes to iMessage, WhatsApp, GroupMe or Slack.</span></li>
+      <li><b>Calendars</b><span>Once a night is locked, everyone gets one-tap buttons for Google Calendar, Outlook, and Apple Calendar.</span></li>
+      <li><b>Reservations</b><span>Locked dinners link to OpenTable for a table for four, plus Google Maps for the spot.</span></li>
+    </ul>
+  </details>
+
+  <!-- Settings -->
+  <details class="card" id="settings">
+    <summary>Dinner settings</summary>
+    <form class="form" id="setForm" onsubmit="return false">
+      <div class="field"><label for="sStart">First night</label><input type="date" id="sStart"></div>
+      <div class="field"><label for="sWeeks">How far out</label>
+        <select id="sWeeks">
+          <option value="2">2 weeks</option><option value="3">3 weeks</option><option value="4">4 weeks</option>
+          <option value="5">5 weeks</option><option value="6">6 weeks</option><option value="8">8 weeks</option><option value="10">10 weeks</option>
+        </select></div>
+      <div class="field"><label for="sTime">Dinner time</label><input type="time" id="sTime" step="900"></div>
+      <div class="field"><label for="sDue">Vote by</label><input type="date" id="sDue"></div>
+      <div class="field full"><label for="sPlace">Where (optional)</label><input type="text" id="sPlace" placeholder="Restaurant name" autocomplete="off"></div>
+      <div class="full tools">
+        <button class="btn primary" type="button" id="shareBtn">Share the link</button>
+        <button class="btn" type="button" id="copyBtn">Copy link</button>
+      </div>
+    </form>
+  </details>
+
+  <!-- Suggestion box -->
+  <section class="card" id="suggestCard">
+    <div class="head">
+      <span class="eyebrow">Suggestion box</span>
+      <h2>How could this site be better?</h2>
+    </div>
+    <p class="sub">One line is plenty. Suggestions go to an inbox that Claude, who built the site, works through whenever Ben asks for an update.</p>
+    <form class="suggest" id="suggestForm" novalidate>
+      <label class="visually-hidden" for="suggestText">Your suggestion</label>
+      <input type="text" id="suggestText" maxlength="500" placeholder="Let us pick the restaurant too" autocomplete="off" enterkeyhint="send">
+      <button class="btn primary" type="submit" id="suggestSend">Send</button>
+    </form>
+    <p class="sub" id="suggestNote" hidden></p>
+    <ul class="ideas" id="ideas" hidden></ul>
+  </section>
+
+  <div class="sync" id="sync"><span class="dot" id="syncDot"></span><span id="syncText">Connecting…</span></div>
+  <p class="foot">Built for four busy guys. Votes sync for everyone with the link.</p>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* =========================================================
+   Config
+   ========================================================= */
+const PEOPLE = [
+  { id: "ben",    name: "Ben" },
+  { id: "ryan",   name: "Ryan" },
+  { id: "jared",  name: "Jared" },
+  { id: "parker", name: "Parker" },
+];
+// Live sync: Firebase Realtime Database in Ben's Google account (project dinner-already).
+// Rules allow read/write under /dinner/<room> and write-once under /suggestions.
+const FIREBASE_URL = "https://dinner-already-default-rtdb.firebaseio.com";
+const FIXED_ROOM = "main";      // one dinner at a time, so the plain site link always opens it
+const POLL_MS = 15000;
+const DINNER_MINUTES = 120;
+
+/* =========================================================
+   Date helpers (local time, YYYY-MM-DD keys)
+   ========================================================= */
+const pad = n => String(n).padStart(2, "0");
+const iso = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const parseISO = s => { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); };
+const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
+const today0 = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; };
+const DOW = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const MONTH_FULL = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const nice = s => { const d = parseISO(s); return `${DOW[d.getDay()]}, ${MON[d.getMonth()]} ${d.getDate()}`; };
+const niceLong = s => { const d = parseISO(s); return `${["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][d.getDay()]}, ${MONTH_FULL[d.getMonth()]} ${d.getDate()}`; };
+const niceTime = t => { let [h, m] = t.split(":").map(Number); const ap = h >= 12 ? "PM" : "AM"; h = h % 12 || 12; return `${h}:${pad(m)} ${ap}`; };
+const nameOf = id => (PEOPLE.find(p => p.id === id) || {}).name || id;
+const listNames = ids => ids.length <= 1 ? ids.map(nameOf).join("") :
+  ids.slice(0, -1).map(nameOf).join(", ") + " and " + nameOf(ids[ids.length - 1]);
+
+/* =========================================================
+   State and merge
+   ========================================================= */
+function blank() {
+  const t = addDays(today0(), 1);
+  return {
+    v: 1,
+    votes: {},      // person -> { "YYYY-MM-DD": "y"|"m"|"n" }
+    upd: {},        // person -> last change ms
+    settings: { start: iso(t), weeks: 6, time: "19:30", place: "", due: iso(addDays(t, 7)), ts: 0 },
+    lock: { date: null, time: null, place: "", by: null, ts: 0 },
+  };
+}
+function normalize(s) {
+  const b = blank();
+  if (!s || typeof s !== "object") return b;
+  return {
+    v: 1,
+    votes: s.votes && typeof s.votes === "object" ? s.votes : {},
+    upd: s.upd && typeof s.upd === "object" ? s.upd : {},
+    settings: Object.assign({}, b.settings, s.settings || {}),
+    lock: Object.assign({}, b.lock, s.lock || {}),
+  };
+}
+// Newest change wins, per person, so two people voting at the same time never erase each other.
+function merge(a, b) {
+  a = normalize(a); b = normalize(b);
+  const out = normalize(null);
+  const ids = new Set([...Object.keys(a.upd), ...Object.keys(b.upd), ...Object.keys(a.votes), ...Object.keys(b.votes)]);
+  for (const id of ids) {
+    const ta = a.upd[id] || 0, tb = b.upd[id] || 0;
+    const src = ta >= tb ? a : b;
+    out.votes[id] = Object.assign({}, src.votes[id] || {});
+    out.upd[id] = Math.max(ta, tb);
+  }
+  out.settings = (a.settings.ts || 0) >= (b.settings.ts || 0) ? a.settings : b.settings;
+  out.lock = (a.lock.ts || 0) >= (b.lock.ts || 0) ? a.lock : b.lock;
+  return out;
+}
+const prune = v => {
+  if (v === null || v === undefined) return undefined;
+  if (typeof v !== "object" || Array.isArray(v)) return v;
+  const o = {};
+  for (const k of Object.keys(v).sort()) { const x = prune(v[k]); if (x !== undefined) o[k] = x; }
+  return Object.keys(o).length ? o : undefined;
+};
+const canon = v => JSON.stringify(prune(v) ?? null);
+const same = (a, b) => canon(a) === canon(b);
+
+/* =========================================================
+   Scoring
+   ========================================================= */
+function rangeDates(st) {
+  const start = parseISO(st.settings.start);
+  const out = [];
+  const t0 = today0();
+  for (let i = 0; i < st.settings.weeks * 7; i++) {
+    const d = addDays(start, i);
+    if (d >= t0) out.push(iso(d));
+  }
+  return out;
+}
+function rank(st) {
+  const res = [];
+  for (const date of rangeDates(st)) {
+    let y = [], m = [], n = [], q = [];
+    for (const p of PEOPLE) {
+      const v = (st.votes[p.id] || {})[date];
+      (v === "y" ? y : v === "m" ? m : v === "n" ? n : q).push(p.id);
+    }
+    if (n.length) continue;
+    const score = y.length * 2 + m.length;
+    if (score === 0) continue;
+    res.push({ date, y, m, q, score });
+  }
+  res.sort((a, b) => b.score - a.score || (a.date < b.date ? -1 : 1));
+  return res;
+}
+function hasVoted(st, id) { return Object.keys(st.votes[id] || {}).length > 0; }
+
+/* =========================================================
+   ICS import
+   ========================================================= */
+function parseICSDate(val, params) {
+  // returns {date: Date, allDay: bool}
+  const v = val.trim();
+  if (/^\d{8}$/.test(v) || /VALUE=DATE(?!-)/.test(params || "")) {
+    return { date: new Date(+v.slice(0, 4), +v.slice(4, 6) - 1, +v.slice(6, 8)), allDay: true };
+  }
+  const m = v.match(/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})?(Z)?$/);
+  if (!m) return null;
+  const [, Y, M, D, h, mi, s = "0", z] = m;
+  const d = z ? new Date(Date.UTC(+Y, +M - 1, +D, +h, +mi, +s)) : new Date(+Y, +M - 1, +D, +h, +mi, +s);
+  return { date: d, allDay: false };
+}
+function parseICS(text) {
+  const lines = text.replace(/\r\n/g, "\n").replace(/\n[ \t]/g, "").split("\n");
+  const events = [];
+  let cur = null;
+  for (const raw of lines) {
+    const line = raw.trimEnd();
+    if (line === "BEGIN:VEVENT") { cur = {}; continue; }
+    if (line === "END:VEVENT") { if (cur && cur.start) events.push(cur); cur = null; continue; }
+    if (!cur) continue;
+    const idx = line.indexOf(":"); if (idx < 0) continue;
+    const left = line.slice(0, idx), val = line.slice(idx + 1);
+    const [key, ...params] = left.split(";");
+    const p = params.join(";");
+    if (key === "DTSTART") cur.start = parseICSDate(val, p);
+    else if (key === "DTEND") cur.end = parseICSDate(val, p);
+    else if (key === "RRULE") cur.rrule = val;
+    else if (key === "STATUS") cur.status = val;
+    else if (key === "TRANSP") cur.transp = val;
+  }
+  return events.filter(e => e.start && e.status !== "CANCELLED" && e.transp !== "TRANSPARENT");
+}
+function expand(ev, from, to) {
+  // yields [start, end, allDay] occurrences intersecting [from, to]
+  const out = [];
+  const s0 = ev.start.date;
+  const allDay = ev.start.allDay;
+  let e0 = ev.end ? ev.end.date : (allDay ? addDays(s0, 1) : new Date(s0.getTime() + 3600e3));
+  const dur = e0 - s0;
+  const push = s => { const e = new Date(s.getTime() + dur); if (e > from && s < to) out.push([s, e, allDay]); };
+  if (!ev.rrule) { push(s0); return out; }
+  const r = Object.fromEntries(ev.rrule.split(";").map(kv => kv.split("=")));
+  const freq = r.FREQ, interval = +(r.INTERVAL || 1);
+  const until = r.UNTIL ? (parseICSDate(r.UNTIL, "") || {}).date : null;
+  let count = r.COUNT ? +r.COUNT : Infinity;
+  const limit = until && until < to ? until : to;
+  const dayMap = { SU: 0, MO: 1, TU: 2, WE: 3, TH: 4, FR: 5, SA: 6 };
+  if (freq === "DAILY") {
+    for (let s = new Date(s0), i = 0; s <= limit && count > 0 && i < 2000; s = addDays(s, interval), i++) { push(new Date(s)); count--; }
+  } else if (freq === "WEEKLY") {
+    const days = r.BYDAY ? r.BYDAY.split(",").map(x => dayMap[x.slice(-2)]) : [s0.getDay()];
+    const wk0 = addDays(s0, -s0.getDay());
+    for (let w = 0; w < 600; w += interval) {
+      const wk = addDays(wk0, w * 7);
+      if (wk > limit) break;
+      for (const dd of days.sort()) {
+        const s = addDays(wk, dd); s.setHours(s0.getHours(), s0.getMinutes(), s0.getSeconds());
+        if (s < s0 || s > limit || count <= 0) continue;
+        push(s); count--;
+      }
+      if (count <= 0) break;
+    }
+  } else if (freq === "MONTHLY" && !r.BYDAY) {
+    for (let i = 0; i < 120 && count > 0; i += interval) {
+      const s = new Date(s0); s.setMonth(s0.getMonth() + i);
+      if (s > limit) break; push(s); count--;
+    }
+  } else { push(s0); }
+  return out;
+}
+function busyFromICS(text, dates) {
+  const events = parseICS(text);
+  const result = {}; // date -> "n" | "m"
+  if (!dates.length) return result;
+  const from = parseISO(dates[0]), to = addDays(parseISO(dates[dates.length - 1]), 1);
+  for (const ev of events) {
+    for (const [s, e, allDay] of expand(ev, from, to)) {
+      for (const date of dates) {
+        const d = parseISO(date);
+        if (allDay) {
+          const ds = new Date(s); ds.setHours(0,0,0,0);
+          if (d >= ds && d < e) { if (result[date] !== "n") result[date] = "m"; }
+        } else {
+          const ws = new Date(d); ws.setHours(17, 0, 0, 0);
+          const we = new Date(d); we.setHours(22, 0, 0, 0);
+          if (s < we && e > ws) result[date] = "n";
+        }
+      }
+    }
+  }
+  return result;
+}
+
+/* =========================================================
+   Link encoding (fallback when live sync is down)
+   ========================================================= */
+const b64u = bytes => btoa(String.fromCharCode(...bytes)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+const unb64u = s => Uint8Array.from(atob(s.replace(/-/g, "+").replace(/_/g, "/")), c => c.charCodeAt(0));
+async function encodeState(st) {
+  const raw = new TextEncoder().encode(JSON.stringify(st));
+  if (!window.CompressionStream) return "j" + b64u(raw);
+  const buf = await new Response(new Blob([raw]).stream().pipeThrough(new CompressionStream("deflate-raw"))).arrayBuffer();
+  return "z" + b64u(new Uint8Array(buf));
+}
+async function decodeState(s) {
+  try {
+    if (s[0] === "j") return JSON.parse(new TextDecoder().decode(unb64u(s.slice(1))));
+    if (s[0] === "z" && window.DecompressionStream) {
+      const buf = await new Response(new Blob([unb64u(s.slice(1))]).stream().pipeThrough(new DecompressionStream("deflate-raw"))).arrayBuffer();
+      return JSON.parse(new TextDecoder().decode(buf));
+    }
+  } catch (e) {}
+  return null;
+}
+
+/* =========================================================
+   Storage + sync
+   ========================================================= */
+const LS_ME = "dinner-me", LS_ROOM = "dinner-room";
+const lsGet = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+
+const Store = {
+  room: null,
+  mode: "live",          // "live" | "link"
+  url(room) { return `${FIREBASE_URL}/dinner/${encodeURIComponent(room)}.json`; },
+  async get() {
+    const r = await fetch(this.url(this.room), { headers: { Accept: "application/json" }, cache: "no-store" });
+    if (!r.ok) throw new Error("get " + r.status);
+    const j = await r.json();
+    return j;
+  },
+  async put(st) {
+    const r = await fetch(this.url(this.room), {
+      method: "PUT", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(st),
+    });
+    if (!r.ok) throw new Error("put " + r.status);
+  },
+  async create(st) {
+    const id = FIXED_ROOM || crypto.getRandomValues(new Uint32Array(2)).join("").slice(0, 14);
+    this.room = id; await this.put(st); return id;
+  },
+  async suggest(item) {
+    const r = await fetch(`${FIREBASE_URL}/suggestions.json`, {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(item),
+    });
+    if (!r.ok) throw new Error("suggest " + r.status);
+  },
+  async suggestions() {
+    const r = await fetch(`${FIREBASE_URL}/suggestions.json`, { cache: "no-store" });
+    if (!r.ok) throw new Error("suggestions " + r.status);
+    return Object.values((await r.json()) || {}).sort((a, b) => b.ts - a.ts);
+  },
+};
+
+let state = blank();
+let me = lsGet(LS_ME);
+let pendingSave = null, saving = false, dirty = false;
+
+function localKey() { return "dinner-state:" + (Store.room || "link"); }
+function saveLocal() { lsSet(localKey(), JSON.stringify(state)); }
+
+function setSync(kind, text) {
+  document.getElementById("syncDot").className = "dot " + kind;
+  document.getElementById("syncText").textContent = text;
+}
+function stamp() { const d = new Date(); return niceTime(`${d.getHours()}:${pad(d.getMinutes())}`); }
+
+async function pull() {
+  if (Store.mode !== "live" || !Store.room) return;
+  try {
+    const remote = await Store.get();
+    const merged = merge(state, remote);
+    const changed = !same(merged, state);
+    state = merged; saveLocal();
+    if (changed) render();
+    // Remote missing something we have (offline edits): push it.
+    if (!same(normalize(remote), merged)) queueSave(0);
+    setSync("ok", `Synced for all four · ${stamp()}`);
+    loadSuggestions();
+  } catch (e) {
+    setSync("warn", "Can't reach sync right now. Your votes are saved here and will send when it's back.");
+  }
+}
+function queueSave(delay = 500) {
+  dirty = true; saveLocal();
+  clearTimeout(pendingSave);
+  pendingSave = setTimeout(flush, delay);
+}
+async function flush() {
+  if (Store.mode === "link") { await writeHash(); return; }
+  if (saving) { pendingSave = setTimeout(flush, 400); return; }
+  saving = true;
+  try {
+    let remote = null;
+    try { remote = await Store.get(); } catch (e) {}
+    state = merge(state, remote); saveLocal();
+    await Store.put(state);
+    dirty = false;
+    setSync("ok", `Saved for all four · ${stamp()}`);
+    render();
+  } catch (e) {
+    setSync("warn", "Not sent yet. Retrying in a few seconds.");
+    pendingSave = setTimeout(flush, 5000);
+  } finally { saving = false; }
+}
+async function writeHash() {
+  const enc = await encodeState(state);
+  history.replaceState(null, "", location.pathname + "#d=" + enc);
+  setSync("warn", "Link mode: after you vote, tap Share so the group gets your votes.");
+}
+function shareURL() {
+  const base = location.origin + location.pathname;
+  if (Store.mode === "live" && Store.room && !FIXED_ROOM) return `${base}?room=${encodeURIComponent(Store.room)}`;
+  if (Store.mode === "live") return base;
+  return location.href;
+}
+
+/* =========================================================
+   Actions
+   ========================================================= */
+function setVote(date, v) {
+  const mine = Object.assign({}, state.votes[me] || {});
+  if (v) mine[date] = v; else delete mine[date];
+  state.votes[me] = mine; state.upd[me] = Date.now();
+}
+const CYCLE = { undefined: "y", y: "m", m: "n", n: undefined };
+function tapDay(date) {
+  if (!me) { toast("Pick who you are first"); document.getElementById("pickCard").scrollIntoView({ behavior: "smooth" }); return; }
+  const cur = (state.votes[me] || {})[date];
+  setVote(date, CYCLE[cur]);
+  render(); queueSave();
+}
+function tapWeekday(dow) {
+  if (!me) { toast("Pick who you are first"); return; }
+  const dates = rangeDates(state).filter(d => parseISO(d).getDay() === dow);
+  if (!dates.length) return;
+  const next = CYCLE[(state.votes[me] || {})[dates[0]]];
+  dates.forEach(d => setVote(d, next));
+  render(); queueSave();
+  const label = { y: "yes", m: "if I must", n: "can't" }[next] || "cleared";
+  toast(`Every ${["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][dow]}: ${label}`);
+}
+function lockNight(date) {
+  state.lock = { date, time: state.settings.time, place: state.settings.place || "", by: me, ts: Date.now() };
+  render(); queueSave(0);
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+function unlock() {
+  state.lock = { date: null, time: null, place: "", by: me, ts: Date.now() };
+  render(); queueSave(0);
+}
+
+/* Sharing: share sheet first, clipboard second */
+async function share(text) {
+  const url = shareURL();
+  const payload = { title: "Dinner, Already", text, url };
+  if (navigator.share) {
+    try { await navigator.share(payload); return; } catch (e) { if (e && e.name === "AbortError") return; }
+  }
+  try { await navigator.clipboard.writeText(`${text} ${url}`); toast("Copied. Paste it in the group text."); }
+  catch (e) { window.prompt("Copy this:", `${text} ${url}`); }
+}
+
+/* Calendar links */
+function eventTimes(lock) {
+  const [h, m] = (lock.time || "19:30").split(":").map(Number);
+  const s = parseISO(lock.date); s.setHours(h, m, 0, 0);
+  const e = new Date(s.getTime() + DINNER_MINUTES * 60000);
+  return [s, e];
+}
+const utcStamp = d => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+function gcalLink(lock) {
+  const [s, e] = eventTimes(lock);
+  const q = new URLSearchParams({
+    action: "TEMPLATE", text: "Dinner: Ben, Ryan, Jared, Parker",
+    dates: `${utcStamp(s)}/${utcStamp(e)}`, details: `Locked in on Dinner, Already. ${shareURL()}`,
+    location: lock.place || "",
+  });
+  return "https://calendar.google.com/calendar/render?" + q.toString();
+}
+function outlookLink(lock) {
+  const [s, e] = eventTimes(lock);
+  const q = new URLSearchParams({
+    path: "/calendar/action/compose", rru: "addevent", subject: "Dinner: Ben, Ryan, Jared, Parker",
+    startdt: s.toISOString(), enddt: e.toISOString(), location: lock.place || "", body: `Locked in on Dinner, Already. ${shareURL()}`,
+  });
+  return "https://outlook.live.com/calendar/0/deeplink/compose?" + q.toString();
+}
+function icsText(lock) {
+  const [s, e] = eventTimes(lock);
+  const esc = t => String(t).replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\n/g, "\\n");
+  return [
+    "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Dinner Already//EN", "CALSCALE:GREGORIAN", "METHOD:PUBLISH",
+    "BEGIN:VEVENT",
+    `UID:dinner-${lock.date}-${lock.ts}@dinner-already`,
+    `DTSTAMP:${utcStamp(new Date())}`, `DTSTART:${utcStamp(s)}`, `DTEND:${utcStamp(e)}`,
+    "SUMMARY:Dinner: Ben\\, Ryan\\, Jared\\, Parker",
+    lock.place ? `LOCATION:${esc(lock.place)}` : null,
+    `DESCRIPTION:${esc("Locked in on Dinner, Already. " + shareURL())}`,
+    "BEGIN:VALARM", "TRIGGER:-PT3H", "ACTION:DISPLAY", "DESCRIPTION:Dinner tonight", "END:VALARM",
+    "END:VEVENT", "END:VCALENDAR",
+  ].filter(Boolean).join("\r\n");
+}
+function downloadICS(lock) {
+  const blob = new Blob([icsText(lock)], { type: "text/calendar" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = `dinner-${lock.date}.ics`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+}
+function openTableLink(lock) {
+  const q = new URLSearchParams({ dateTime: `${lock.date}T${lock.time || "19:30"}`, covers: "4", term: lock.place || "" });
+  return "https://www.opentable.com/s?" + q.toString();
+}
+function mapsLink(place) { return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(place); }
+
+/* =========================================================
+   Render
+   ========================================================= */
+const $ = id => document.getElementById(id);
+const escHTML = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+let confirmDate = null;
+let resetAsk = false;
+
+function chyron() {
+  const voted = PEOPLE.filter(p => hasVoted(state, p.id)).map(p => p.id);
+  const waiting = PEOPLE.filter(p => !voted.includes(p.id)).map(p => p.id);
+  const best = rank(state);
+  const allIn = best.find(b => b.y.length + b.m.length === 4);
+  if (state.lock.date) return ["Locked in", `It's happening. ${nice(state.lock.date)} at ${niceTime(state.lock.time || state.settings.time)}.`];
+  if (!voted.length) return ["Breaking", "Nobody's voted. Classic."];
+  if (waiting.length) return ["Still waiting on", `${listNames(waiting)}. The rest of us are starving.`];
+  if (allIn) return ["We have a night", `All four can do ${nice(allIn.date)}. Somebody lock it in.`];
+  return ["Bad news", "No night works for all four yet. Somebody's gotta give."];
+}
+
+function render() {
+  const hasRoom = Store.mode === "link" || !!Store.room;
+  $("startCard").hidden = hasRoom;
+  const showApp = hasRoom;
+  ["rollCard", "gridCard", "bestCard", "connect", "settings"].forEach(id => $(id).hidden = !showApp);
+
+  // Chyron
+  const [tag, line] = hasRoom ? chyron() : ["Coming up", "Four busy guys try to eat dinner. Again."];
+  $("chyTag").textContent = tag; $("chyLine").textContent = line;
+  if (!hasRoom) { $("pickCard").hidden = true; $("ticket").hidden = true; $("whoStrip").hidden = true; return; }
+
+  // Identity
+  $("pickCard").hidden = !!me;
+  $("pick").innerHTML = PEOPLE.map(p => `<button type="button" data-me="${p.id}">${p.name}</button>`).join("");
+  const ws = $("whoStrip");
+  ws.hidden = !me;
+  if (me) ws.innerHTML = `<span>You're <b style="color:var(--cream-text)">${escHTML(nameOf(me))}</b>.</span><button class="linkbtn" type="button" id="switchMe">Not you?</button>`;
+
+  // Roll call
+  const voted = PEOPLE.filter(p => hasVoted(state, p.id));
+  const due = state.settings.due;
+  const daysLeft = Math.round((parseISO(due) - today0()) / 864e5);
+  $("dueLine").textContent = daysLeft > 1 ? `Votes due ${nice(due)} · ${daysLeft} days` :
+    daysLeft === 1 ? `Votes due tomorrow, ${nice(due)}` : daysLeft === 0 ? "Votes due today" : `Voting closed ${nice(due)}`;
+  $("rollTitle").textContent = voted.length === 4 ? "Everybody's voted" : `${voted.length} of 4 have voted`;
+  $("roll").innerHTML = PEOPLE.map(p => {
+    const done = hasVoted(state, p.id);
+    const isMe = p.id === me;
+    return `<div class="person ${done ? "done" : ""} ${isMe ? "me" : ""}">
+      <div class="avatar" aria-hidden="true">${p.name[0]}</div>
+      <div class="nm">${p.name}${isMe ? " (you)" : ""}</div>
+      ${done ? `<div class="st">Voted</div>` : isMe ? `<div class="st">Your turn</div>` :
+        `<button class="nudge" type="button" data-nudge="${p.id}">Nudge</button>`}
+    </div>`;
+  }).join("");
+
+  // Grid
+  const best = rank(state);
+  const topDate = best[0] && best[0].date;
+  const start = parseISO(state.settings.start);
+  const end = addDays(start, state.settings.weeks * 7 - 1);
+  const t0 = today0();
+  // Weeks start Monday
+  const gStart = addDays(start, -((start.getDay() + 6) % 7));
+  const gEnd = addDays(end, (7 - end.getDay()) % 7);
+  const dowOrder = [1, 2, 3, 4, 5, 6, 0];
+  let html = `<div class="dow">${dowOrder.map(d => `<button type="button" data-dow="${d}" aria-label="Set every ${DOW[d]}">${"SMTWTFS"[d]}</button>`).join("")}</div>`;
+  let first = true;
+  for (let w = new Date(gStart); w <= gEnd; w = addDays(w, 7)) {
+    // Month label: above the first week, and above any week whose Monday opens a new month
+    if (first) { html += `<div class="month">${MONTH_FULL[(start < t0 ? t0 : start).getMonth()]}</div>`; first = false; }
+    else if (w.getDate() <= 7 && w.getMonth() !== addDays(w, -7).getMonth()) html += `<div class="month">${MONTH_FULL[w.getMonth()]}</div>`;
+    html += `<div class="week">`;
+    for (let i = 0; i < 7; i++) {
+      const d = addDays(w, i), key = iso(d);
+      const inRange = d >= start && d <= end && d >= t0;
+      const mine = (state.votes[me] || {})[key];
+      const slots = PEOPLE.map(p => `<i class="${(state.votes[p.id] || {})[key] || ""}" title="${p.name}"></i>`).join("");
+      const label = `${nice(key)}. You: ${({ y: "yes", m: "if I must", n: "can't" })[mine] || "no answer"}. ` +
+        PEOPLE.filter(p => p.id !== me).map(p => `${p.name}: ${({ y: "yes", m: "if I must", n: "can't" })[(state.votes[p.id] || {})[key]] || "no answer"}`).join(", ");
+      html += `<button type="button" class="day ${inRange ? "" : "off"} ${mine ? "v-" + mine : ""} ${key === topDate && inRange ? "top" : ""} ${key === state.lock.date ? "locked" : ""}"
+        ${inRange ? `data-date="${key}"` : `tabindex="-1" aria-hidden="true"`} aria-label="${escHTML(label)}">
+        <span class="dn">${d.getDate() === 1 ? `<small>${MON[d.getMonth()]}</small>` : ""}${d.getDate()}</span>
+        <span class="slots" aria-hidden="true">${slots}</span>
+      </button>`;
+    }
+    html += `</div>`;
+  }
+  $("grid").innerHTML = html;
+
+  // Best nights
+  const top = best.slice(0, 3);
+  const nobody = PEOPLE.every(p => !hasVoted(state, p.id));
+  $("best").innerHTML = !top.length ?
+    `<div class="empty">${nobody ? "No votes yet. Tap your nights above and the best ones show up here." : "No night survives yet. Every night so far has at least one can't. Flip a can't to if I must where you can."}</div>` :
+    top.map((b, i) => {
+      const chips = PEOPLE.map(p => b.y.includes(p.id) ? `<span class="chip y">${p.name} ✓</span>` :
+        b.m.includes(p.id) ? `<span class="chip m">${p.name} ~</span>` : `<span class="chip q">${p.name} ?</span>`).join("");
+      const full = b.q.length === 0;
+      const isLocked = state.lock.date === b.date;
+      let act;
+      if (isLocked) act = `<span class="confirm">Locked in.</span>`;
+      else if (confirmDate === b.date) act = `<span class="confirm">Lock in ${nice(b.date)} at ${niceTime(state.settings.time)}?</span>
+          <button class="btn primary small" type="button" data-lockyes="${b.date}">Lock it</button>
+          <button class="btn small" type="button" data-lockno>Not yet</button>`;
+      else act = `<button class="btn ${full ? "hot" : ""} small" type="button" data-lock="${b.date}">${full ? "Lock it in" : "Lock it in anyway"}</button>
+          ${full ? "" : `<span class="sub" style="font-size:13px">Waiting on ${listNames(b.q)}</span>`}`;
+      return `<div class="night ${i === 0 ? "first" : ""}">
+        <div class="rank">${i + 1}</div>
+        <div class="when">${nice(b.date)}</div>
+        <div class="chips">${chips}</div>
+        <div class="act">${act}</div>
+      </div>`;
+    }).join("");
+
+  // Ticket
+  const L = state.lock;
+  $("ticket").hidden = !L.date;
+  const typingInTicket = $("ticket").contains(document.activeElement) && document.activeElement.tagName === "INPUT";
+  if (L.date && !typingInTicket) {
+    const place = L.place || "";
+    $("ticket").innerHTML = `
+      <div class="head"><span class="eyebrow">Dinner is on · locked by ${escHTML(nameOf(L.by || ""))}</span>
+      <div class="big">${niceLong(L.date)}</div></div>
+      <div class="meta">
+        <div class="field"><label for="tTime">Time</label><input type="time" id="tTime" step="900" value="${escHTML(L.time || state.settings.time)}"></div>
+        <div class="field"><label for="tPlace">Where</label><input type="text" id="tPlace" placeholder="Pick a spot" value="${escHTML(place)}" autocomplete="off"></div>
+      </div>
+      <div class="field"><label>Add to your calendar</label>
+        <div class="cal3">
+          <a class="btn primary" href="${gcalLink(L)}" target="_blank" rel="noopener">Google</a>
+          <button class="btn primary" type="button" id="icsBtn">Apple</button>
+          <a class="btn primary" href="${outlookLink(L)}" target="_blank" rel="noopener">Outlook</a>
+        </div>
+      </div>
+      <hr>
+      <div class="tools">
+        <a class="btn" href="${openTableLink(L)}" target="_blank" rel="noopener">Book on OpenTable</a>
+        ${place ? `<a class="btn" href="${mapsLink(place)}" target="_blank" rel="noopener">Map it</a>` : ""}
+        <button class="btn" type="button" id="tellGroup">Tell the group</button>
+        <button class="linkbtn" type="button" id="unlockBtn" style="color:var(--ink)">Unlock</button>
+      </div>
+      <hr>
+      ${resetAsk ? `<p class="sub" style="color:var(--ink)">Wipe everyone's votes and start picking the next dinner?
+          <button class="linkbtn" type="button" id="resetYes" style="color:var(--ink)">Start the next one</button> ·
+          <button class="linkbtn" type="button" id="resetNo" style="color:var(--ink)">Not yet</button></p>`
+        : `<button class="btn small" type="button" id="resetAsk">Done eating? Plan the next dinner</button>`}`;
+  }
+
+  // Settings fields (don't clobber while typing)
+  const S = state.settings;
+  const setIf = (id, v) => { const el = $(id); if (document.activeElement !== el) el.value = v; };
+  setIf("sStart", S.start); setIf("sWeeks", String(S.weeks)); setIf("sTime", S.time); setIf("sDue", S.due); setIf("sPlace", S.place || "");
+}
+
+/* =========================================================
+   Toast
+   ========================================================= */
+let toastT;
+function toast(msg) {
+  const t = $("toast"); t.textContent = msg; t.classList.add("show");
+  clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 2400);
+}
+
+/* =========================================================
+   Events
+   ========================================================= */
+document.addEventListener("click", e => {
+  const el = e.target.closest("button, a");
+  if (!el) return;
+  if (el.dataset.date) return tapDay(el.dataset.date);
+  if (el.dataset.dow) return tapWeekday(+el.dataset.dow);
+  if (el.dataset.me) { me = el.dataset.me; lsSet(LS_ME, me); render(); toast(`Hey ${nameOf(me)}. Tap your nights.`); return; }
+  if (el.id === "switchMe") { me = null; lsSet(LS_ME, ""); render(); $("pickCard").scrollIntoView({ behavior: "smooth" }); return; }
+  if (el.dataset.nudge) return share(`${nameOf(el.dataset.nudge)}. Dinner. Pick your nights, it takes 30 seconds:`);
+  if (el.dataset.lock) { confirmDate = el.dataset.lock; render(); return; }
+  if (el.dataset.lockyes) { confirmDate = null; lockNight(el.dataset.lockyes); toast("Locked in. Add it to your calendar."); return; }
+  if (el.hasAttribute("data-lockno")) { confirmDate = null; render(); return; }
+  if (el.id === "icsBtn") return downloadICS(state.lock);
+  if (el.id === "unlockBtn") { unlock(); toast("Unlocked. Back to voting."); return; }
+  if (el.id === "tellGroup") {
+    const L = state.lock;
+    return share(`Dinner is locked: ${niceLong(L.date)} at ${niceTime(L.time)}${L.place ? `, ${L.place}` : ""}. Add it to your calendar here:`);
+  }
+  if (el.id === "shareBtn") return share("Dinner. Pick your nights:");
+  if (el.id === "copyBtn") {
+    navigator.clipboard.writeText(shareURL()).then(() => toast("Link copied"), () => prompt("Copy this link:", shareURL()));
+    return;
+  }
+  if (el.id === "allYes") {
+    if (!me) { toast("Pick who you are first"); return; }
+    rangeDates(state).forEach(d => { if (!(state.votes[me] || {})[d]) setVote(d, "y"); });
+    render(); queueSave(); toast("Every open night set to yes. Now tap the ones you can't do.");
+    return;
+  }
+  if (el.id === "clearMine") { $("clearConfirm").hidden = false; return; }
+  if (el.id === "clearNo") { $("clearConfirm").hidden = true; return; }
+  if (el.id === "clearYes") { state.votes[me] = {}; state.upd[me] = Date.now(); $("clearConfirm").hidden = true; render(); queueSave(); toast("Cleared"); return; }
+  if (el.id === "startBtn") return startDinner();
+  if (el.id === "resetAsk") { resetAsk = true; render(); return; }
+  if (el.id === "resetNo") { resetAsk = false; render(); return; }
+  if (el.id === "resetYes") {
+    resetAsk = false;
+    const now = Date.now(), fresh = blank();
+    PEOPLE.forEach(p => { fresh.votes[p.id] = {}; fresh.upd[p.id] = now; });
+    fresh.settings.time = state.settings.time; fresh.settings.ts = now;
+    fresh.lock.ts = now; fresh.lock.by = me;
+    state = fresh; render(); queueSave(0);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    toast("New dinner started. Tap your nights.");
+    return;
+  }
+});
+
+$("icsLabel").addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); $("icsFile").click(); } });
+$("icsFile").addEventListener("change", async e => {
+  const f = e.target.files[0]; e.target.value = "";
+  if (!f) return;
+  if (!me) { toast("Pick who you are first"); return; }
+  try {
+    const text = await f.text();
+    const busy = busyFromICS(text, rangeDates(state));
+    let n = 0, m = 0;
+    for (const [date, v] of Object.entries(busy)) {
+      const cur = (state.votes[me] || {})[date];
+      if (v === "n" && cur !== "n") { setVote(date, "n"); n++; }
+      else if (v === "m" && (!cur || cur === "y")) { setVote(date, "m"); m++; }
+    }
+    render(); queueSave();
+    toast(n + m ? `From your calendar: ${n} can't, ${m} if I must. Tap the rest.` : "Your calendar is clear for every evening. Nice.");
+  } catch (err) { toast("Couldn't read that file. Export it as .ics and try again."); }
+});
+
+// Settings
+const onSet = () => {
+  const S = Object.assign({}, state.settings);
+  S.start = $("sStart").value || S.start;
+  S.weeks = +$("sWeeks").value || S.weeks;
+  S.time = $("sTime").value || S.time;
+  S.due = $("sDue").value || S.due;
+  S.place = $("sPlace").value;
+  S.ts = Date.now();
+  state.settings = S; render(); queueSave(800);
+};
+["sStart", "sWeeks", "sTime", "sDue"].forEach(id => $(id).addEventListener("change", onSet));
+$("sPlace").addEventListener("input", onSet);
+
+// Ticket edits
+document.addEventListener("change", e => {
+  if (e.target.id === "tPlace" && state.lock.date) { e.target.blur(); render(); return; }
+  if (e.target.id === "tTime" && state.lock.date) { state.lock = Object.assign({}, state.lock, { time: e.target.value, ts: Date.now() }); render(); queueSave(); }
+});
+document.addEventListener("input", e => {
+  if (e.target.id === "tPlace" && state.lock.date) {
+    state.lock = Object.assign({}, state.lock, { place: e.target.value, ts: Date.now() });
+    queueSave(900);
+  }
+});
+
+/* =========================================================
+   Suggestion box
+   ========================================================= */
+function renderIdeas(list) {
+  const ul = $("ideas");
+  if (!list || !list.length) { ul.hidden = true; return; }
+  ul.hidden = false;
+  ul.innerHTML = list.slice(0, 5).map(i => {
+    const d = new Date(i.ts);
+    const when = `${MON[d.getMonth()]} ${d.getDate()}`;
+    return `<li><span class="txt">${escHTML(i.text)}</span><span class="by">${escHTML(i.by ? nameOf(i.by) : "Anon")} · ${when}</span></li>`;
+  }).join("");
+}
+async function loadSuggestions() {
+  try { renderIdeas(await Store.suggestions()); } catch (e) {}
+}
+$("suggestForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const input = $("suggestText"), btn = $("suggestSend"), note = $("suggestNote");
+  const text = input.value.trim().slice(0, 500);
+  if (!text) { note.hidden = false; note.textContent = "Type a suggestion first."; input.focus(); return; }
+  btn.disabled = true; btn.textContent = "Sending…";
+  try {
+    await Store.suggest({ text, by: me || "", ts: Date.now(), page: location.pathname });
+    input.value = "";
+    note.hidden = false; note.textContent = "Got it. It's in the inbox.";
+    toast("Suggestion sent");
+    loadSuggestions();
+  } catch (err) {
+    note.hidden = false; note.textContent = "That didn't send. Check your connection and tap Send again.";
+  } finally { btn.disabled = false; btn.textContent = "Send"; }
+});
+
+/* =========================================================
+   Boot
+   ========================================================= */
+async function startDinner() {
+  $("startBtn").disabled = true; $("startBtn").textContent = "Starting…";
+  state = blank();
+  try {
+    const id = await Store.create(state);
+    if (!FIXED_ROOM) { lsSet(LS_ROOM, id); history.replaceState(null, "", `${location.pathname}?room=${encodeURIComponent(id)}`); }
+    Store.mode = "live";
+    setSync("ok", "Dinner started. Share the link with the group.");
+  } catch (e) {
+    Store.mode = "link";
+    await writeHash();
+  }
+  render();
+  toast("Pick who you are, then share the link");
+}
+
+async function boot() {
+  const params = new URLSearchParams(location.search);
+  const hash = location.hash.startsWith("#d=") ? location.hash.slice(3) : null;
+  let room = FIXED_ROOM || params.get("room");
+
+  if (hash) {
+    Store.mode = "link";
+    const linked = await decodeState(hash);
+    let local = null; try { local = JSON.parse(lsGet("dinner-state:link")); } catch (e) {}
+    state = merge(merge(blank(), local), linked);
+    saveLocal(); render();
+    setSync("warn", "Link mode: after you vote, tap Share so the group gets your votes.");
+    return;
+  }
+  if (!room) {
+    const last = lsGet(LS_ROOM);
+    if (last) { room = last; history.replaceState(null, "", `${location.pathname}?room=${encodeURIComponent(room)}`); }
+  }
+  if (!room) { render(); setSync("", "Not started yet"); return; }
+
+  Store.mode = "live";
+  if (FIXED_ROOM) {
+    // Dinner exists only once someone has started it
+    Store.room = null;
+    try {
+      const remote = await Store.get.call({ url: Store.url, room: FIXED_ROOM });
+      if (remote) Store.room = FIXED_ROOM;
+    } catch (e) {
+      let cached = null; try { cached = JSON.parse(lsGet("dinner-state:" + FIXED_ROOM)); } catch (err) {}
+      if (cached) Store.room = FIXED_ROOM;
+    }
+    if (!Store.room) { render(); setSync("", "No dinner in the works yet"); loadSuggestions(); return; }
+  } else {
+    Store.room = room; lsSet(LS_ROOM, room);
+  }
+  let local = null; try { local = JSON.parse(lsGet(localKey())); } catch (e) {}
+  state = merge(blank(), local);
+  render();
+  loadSuggestions();
+  await pull();
+  setInterval(() => { if (document.visibilityState === "visible" && !dirty) pull(); }, POLL_MS);
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") pull(); });
+}
+
+// Reduced motion: hold Fred still
+if (matchMedia("(prefers-reduced-motion: reduce)").matches) { const v = $("meme"); v.removeAttribute("autoplay"); v.pause(); }
+
+boot();
+</script>
+</body>
+</html>
